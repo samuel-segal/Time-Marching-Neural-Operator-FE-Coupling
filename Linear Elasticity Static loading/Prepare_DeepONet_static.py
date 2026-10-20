@@ -469,14 +469,15 @@ if __name__ == "__main__":
     model = PI_DeepONet(branch_layers, trunk_layers, **ela_model)
     
     # Create data set
-    batch_size =  100 
+    batch_size =  100
+    N_training = 200#2000000
 
     # dataset for boundary conditions and initial conditions
     bcs_dataset = DataGenerator(u_bcs_train, v_bcs_train, h_bcs_train, s_u_train, s_v_train, batch_size)
     res_dataset = DataGenerator(u_res_train, v_res_train,h_res_train, s_res_train, s_res_train, batch_size)
     
     # Train
-    model.train(bcs_dataset, res_dataset, nIter=2000000)
+    model.train(bcs_dataset, res_dataset, nIter=N_training)
     
 
     # region prediction 
@@ -496,8 +497,8 @@ if __name__ == "__main__":
 
     # load the data 
     os.chdir(originalDir + '/'+ 'static_data_ground_truth' + '/')
-    x_c = np.array(npr.loadtxt('xc1_out.txt')).reshape(1,-1)
-    y_c = np.array(npr.loadtxt('yc1_out.txt')).reshape(1,-1)
+    x_c = np.array(npr.loadtxt('x_c1_out.txt')).reshape(1,-1)
+    y_c = np.array(npr.loadtxt('y_c1_out.txt')).reshape(1,-1)
     X1 = np.array(npr.loadtxt('X1.txt')).reshape(1,-1)
     Y1 = np.array(npr.loadtxt('Y1.txt')).reshape(1,-1)
     u = np.array(npr.loadtxt('u.txt')).reshape(1,-1) # ground truth from full sqaure 
