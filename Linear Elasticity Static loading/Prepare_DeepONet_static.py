@@ -23,7 +23,7 @@ import math
 from scipy.interpolate import griddata
 import pickle
 import scipy
-from scipy.interpolate import Rbf, interp1d, griddata
+from scipy.interpolate import RBFInterpolator, interp1d, griddata
 from utils import plot_loss, plot_bc, createFolder, plot_disp, plot_relative_error
 import numpy as npr
 
@@ -470,7 +470,7 @@ if __name__ == "__main__":
     
     # Create data set
     batch_size =  100
-    N_training = 200#2000000
+    N_training = 0#2000000
 
     # dataset for boundary conditions and initial conditions
     bcs_dataset = DataGenerator(u_bcs_train, v_bcs_train, h_bcs_train, s_u_train, s_v_train, batch_size)
@@ -507,14 +507,18 @@ if __name__ == "__main__":
     Y = np.array(npr.loadtxt('Y.txt')).reshape(1,-1)
     os.chdir(origin_real)   
 
-    u2_fun = Rbf(X, Y, u)
-    v2_fun = Rbf(X, Y, v)
-
+    
+    coords = npr.array([X,Y]).T[:, 0, :]
+    u2_fun = RBFInterpolator(coords, u.T, neighbors=32) #Neighbors implemented for runtime
+    v2_fun = RBFInterpolator(coords, v.T, neighbors=32)
+    
     # interpolate the data to the ground truth
-    u2 = u2_fun(X1, Y1).reshape(1,-1)
-    v2 = v2_fun(X1, Y1).reshape(1,-1)
-    u2c = u2_fun(x_c, y_c).reshape(1,-1)
-    v2c = v2_fun(x_c, y_c).reshape(1,-1)
+    coords1 = npr.array([X1, Y1]).T[:, 0, :]
+    coords_c = npr.array([x_c, y_c]).T[:, 0, :]
+    u2 = u2_fun(coords1).reshape(1,-1)
+    v2 = v2_fun(coords1).reshape(1,-1)
+    u2c = u2_fun(coords_c).reshape(1,-1)
+    v2c = v2_fun(coords_c).reshape(1,-1)
 
     npr.savetxt('u2.txt', u2)
     npr.savetxt('v2.txt', v2)
