@@ -470,7 +470,7 @@ if __name__ == "__main__":
     
     # Create data set
     batch_size =  100
-    N_training = 0#2000000
+    N_training = 2000000
 
     # dataset for boundary conditions and initial conditions
     bcs_dataset = DataGenerator(u_bcs_train, v_bcs_train, h_bcs_train, s_u_train, s_v_train, batch_size)
